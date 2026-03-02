@@ -1,42 +1,67 @@
-import Navbar from "../components/Navbar";
 import { motion } from "framer-motion";
-import { Sprout, HeartPulse, GraduationCap, ArrowRight } from "lucide-react";
+import { Hospital, Eye, Bike, Heart, Leaf, Users, ArrowRight } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const DETAILED_PROGRAMS = [
   {
-    title: "Resilient Crop Initiative",
-    icon: <Sprout className="w-12 h-12 text-green-600" />,
-    description: "We provide farmers with climate-smart, high-yield seeds and organic fertilizers to combat soil degradation.",
-    features: ["Soil Testing Services", "Organic Fertilizer Subsidies", "Drought-Resistant Maize & Soy"],
-    impact: "40% average increase in seasonal yields."
+    id: "healthcare",
+    title: "Healthcare Initiative",
+    icon: <Hospital className="w-12 h-12 text-green-600" />,
+    description: "NHIS-integrated mobile clinics providing comprehensive healthcare services to remote farming communities. Regular health screenings, maternal care, and disease prevention.",
+    features: ["NHIS Coverage", "Mobile Clinics", "Maternal Care", "Disease Prevention", "Health Education"],
+    impact: "Improved health access for 5,000+ rural families."
   },
   {
-    title: "Rural Health Equity",
-    icon: <HeartPulse className="w-12 h-12 text-green-600" />,
-    description: "Our mobile clinics visit remote farming settlements every month to provide primary healthcare and malaria prevention.",
-    features: ["Antenatal Care", "Malaria Screening", "First-Aid Training for Farmers"],
-    impact: "Reduced farm-day losses due to illness by 25%."
+    id: "vision-care",
+    title: "Vision Care Program",
+    icon: <Eye className="w-12 h-12 text-green-600" />,
+    description: "Regular eye screening campaigns and vision correction programs ensuring farmers and students have access to quality eye care.",
+    features: ["Eye Screening", "Vision Correction", "School Programs", "Prevention Workshops"],
+    impact: "Provided glasses to 1,200+ individuals."
   },
   {
-    title: "Agri-Business Academy",
-    icon: <GraduationCap className="w-12 h-12 text-green-600" />,
-    description: "Moving from subsistence to business. We train farmers in bookkeeping, market pricing, and digital tools.",
-    features: ["Financial Literacy", "Market Linkage Programs", "Smartphone Literacy"],
-    impact: "Helped 200+ farmers access formal credit lines."
+    id: "school-care",
+    title: "School Care - Bike to School Initiative",
+    icon: <Bike className="w-12 h-12 text-green-600" />,
+    description: "Promoting youth engagement and agricultural education through bike distribution programs for school children in rural areas.",
+    features: ["Bike Distribution", "Youth Education", "Agricultural Training", "Community Engagement"],
+    impact: "Supported 800+ students with school transportation."
+  },
+  {
+    id: "disability-care",
+    title: "Disability Care Program",
+    icon: <Users className="w-12 h-12 text-green-600" />,
+    description: "Inclusive programs ensuring people with disabilities benefit from healthcare, economic opportunities, and social support.",
+    features: ["Inclusive Services", "Accessibility Programs", "Economic Support", "Social Integration"],
+    impact: "Empowered 300+ people with disabilities."
+  },
+  {
+    id: "lady-care",
+    title: "Lady Care Program",
+    icon: <Heart className="w-12 h-12 text-green-600" />,
+    description: "Women-centered initiatives focusing on health, economic empowerment, leadership development, and family welfare.",
+    features: ["Health Programs", "Economic Empowerment", "Leadership Training", "Family Support"],
+    impact: "Supported 2,000+ women with health and livelihood programs."
+  },
+  {
+    id: "agri-care",
+    title: "Agri-Care - Plant Today for Tomorrow",
+    icon: <Leaf className="w-12 h-12 text-green-600" />,
+    description: "Sustainable agricultural practices promoting long-term food security and environmental stewardship for future generations.",
+    features: ["Sustainable Farming", "Soil Health", "Climate Resilience", "Youth Engagement"],
+    impact: "Helped farmers adopt sustainable practices on 3,000+ acres."
   }
 ];
 
 export default function ProgramsPage() {
   return (
-    <div className="bg-slate-50 min-h-screen font-sans">
-      <Navbar />
-
+    <>
       {/* Hero Header */}
       <section className="bg-white border-b border-slate-100 py-20">
         <div className="container mx-auto px-6 text-center">
           <span className="text-green-600 font-bold uppercase tracking-widest text-sm">Our Solutions</span>
           <h1 className="text-5xl font-black text-slate-900 mt-4 leading-tight">
-            Specialized Support for <br /> Rural Success.
+            Our Core Initiatives <br /> Making Real Impact
           </h1>
         </div>
       </section>
@@ -45,40 +70,41 @@ export default function ProgramsPage() {
       <section className="py-20 container mx-auto px-6 max-w-5xl">
         <div className="space-y-24">
           {DETAILED_PROGRAMS.map((program, index) => (
-            <motion.div 
-              key={index}
-              initial={{ opacity: 0, y: 40 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className={`flex flex-col md:flex-row gap-12 items-center ${index % 2 !== 0 ? 'md:flex-row-reverse' : ''}`}
-            >
-              {/* Icon Box */}
-              <div className="w-full md:w-1/2 flex justify-center">
-                <div className="w-64 h-64 bg-green-100 rounded-[3rem] flex items-center justify-center shadow-inner relative">
-                  {program.icon}
-                  <div className="absolute -bottom-4 -right-4 bg-white p-6 rounded-2xl shadow-lg border border-slate-50 text-center">
-                    <p className="text-xs text-slate-400 font-bold uppercase">Impact</p>
-                    <p className="text-green-600 font-bold">{program.impact}</p>
+            <Link key={index} to={`/programs/${program.id}`} className="block group">
+              <motion.div 
+                initial={{ opacity: 0, y: 40 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                className={`flex flex-col md:flex-row gap-12 items-center cursor-pointer transition-all group-hover:opacity-80 rounded-2xl p-6 ${index % 2 !== 0 ? 'md:flex-row-reverse' : ''}`}
+              >
+                {/* Icon Box */}
+                <div className="w-full md:w-1/2 flex justify-center">
+                  <div className="w-64 h-64 bg-green-100 rounded-[3rem] flex items-center justify-center shadow-inner relative group-hover:shadow-xl group-hover:bg-green-200 transition-all">
+                    {program.icon}
+                    <div className="absolute -bottom-4 -right-4 bg-white p-6 rounded-2xl shadow-lg border border-slate-50 text-center">
+                      <p className="text-xs text-slate-400 font-bold uppercase">Impact</p>
+                      <p className="text-green-600 font-bold">{program.impact}</p>
+                    </div>
                   </div>
                 </div>
-              </div>
 
-              {/* Text Content */}
-              <div className="w-full md:w-1/2">
-                <h2 className="text-3xl font-extrabold text-slate-800 mb-6">{program.title}</h2>
-                <p className="text-slate-600 text-lg leading-relaxed mb-8">
-                  {program.description}
-                </p>
-                <ul className="space-y-3">
-                  {program.features.map((feature, idx) => (
-                    <li key={idx} className="flex items-center gap-3 text-slate-700 font-medium">
-                      <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                      {feature}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </motion.div>
+                {/* Text Content */}
+                <div className="w-full md:w-1/2">
+                  <h2 className="text-3xl font-extrabold text-slate-800 mb-6 group-hover:text-green-600 transition-colors">{program.title}</h2>
+                  <p className="text-slate-600 text-lg leading-relaxed mb-8">
+                    {program.description}
+                  </p>
+                  <ul className="space-y-3">
+                    {program.features.map((feature, idx) => (
+                      <li key={idx} className="flex items-center gap-3 text-slate-700 font-medium">
+                        <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                        {feature}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </motion.div>
+            </Link>
           ))}
         </div>
       </section>
@@ -95,6 +121,6 @@ export default function ProgramsPage() {
           </button>
         </div>
       </section>
-    </div>
+    </>
   );
 }

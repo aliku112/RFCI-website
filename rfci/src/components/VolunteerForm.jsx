@@ -1,20 +1,57 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { CheckCircle, Send } from 'lucide-react';
+import emailjs from '@emailjs/browser';
+import { EMAIL_CONFIG } from '../config/emailConfig';
+
+// EmailJS initialized by config
+
 
 export default function VolunteerForm() {
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    volunteerType: '',
+    message: ''
+  });
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
-  const handleSubmit = (e) => {
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    
-    // Simulating an API call/Email send
-    setTimeout(() => {
-      setLoading(false);
+    setError('');
+
+    try {
+      await emailjs.send(
+        EMAIL_CONFIG.SERVICE_ID,
+        EMAIL_CONFIG.VOLUNTEER_TEMPLATE_ID,
+        {
+          from_name: formData.name,
+          from_email: formData.email,
+          to_email: EMAIL_CONFIG.RECIPIENT_EMAIL,
+          volunteer_type: formData.volunteerType,
+          message: formData.message,
+        }
+      );
+
       setSubmitted(true);
-    }, 1500);
+      setFormData({ name: '', email: '', volunteerType: '', message: '' });
+    } catch (err) {
+      setError('Failed to send application. Please try again or contact us directly.');
+      console.error('Email error:', err);
+    } finally {
+      setLoading(false);
+    }
   };
 
   if (submitted) {
@@ -32,7 +69,10 @@ export default function VolunteerForm() {
           Thank you for reaching out. A member of the RFCI team will contact you shortly.
         </p>
         <button 
-          onClick={() => setSubmitted(false)}
+          onClick={() => {
+            setSubmitted(false);
+            setFormData({ name: '', email: '', volunteerType: '', message: '' });
+          }}
           className="text-green-600 font-bold hover:underline"
         >
           Send another message
@@ -49,6 +89,9 @@ export default function VolunteerForm() {
           <input 
             required
             type="text" 
+            name="name"
+            value={formData.name}
+            onChange={handleChange}
             className="w-full px-4 py-3 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-green-500 transition-all" 
             placeholder="Abeiku Mensah" 
           />
@@ -58,6 +101,9 @@ export default function VolunteerForm() {
           <input 
             required
             type="email" 
+            name="email"
+            value={formData.email}
+            onChange={handleChange}
             className="w-full px-4 py-3 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-green-500 transition-all" 
             placeholder="abeiku@email.com" 
           />
@@ -66,11 +112,18 @@ export default function VolunteerForm() {
 
       <div>
         <label className="block text-sm font-bold text-slate-700 mb-2">How would you like to help?</label>
-        <select className="w-full px-4 py-3 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-green-500 bg-white">
-          <option>Volunteer in the Field</option>
-          <option>Medical Outreach Support</option>
-          <option>Financial Donation / Partnership</option>
-          <option>Educational Training</option>
+        <select 
+          name="volunteerType"
+          value={formData.volunteerType}
+          onChange={handleChange}
+          required
+          className="w-full px-4 py-3 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-green-500 bg-white"
+        >
+          <option value="">Select an option</option>
+          <option value="Volunteer in the Field">Volunteer in the Field</option>
+          <option value="Medical Outreach Support">Medical Outreach Support</option>
+          <option value="Financial Donation / Partnership">Financial Donation / Partnership</option>
+          <option value="Educational Training">Educational Training</option>
         </select>
       </div>
 
@@ -78,11 +131,27 @@ export default function VolunteerForm() {
         <label className="block text-sm font-bold text-slate-700 mb-2">Message</label>
         <textarea 
           required
+          name="message"
+          value={formData.message}
+          onChange={handleChange}
           className="w-full px-4 py-3 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-green-500 transition-all" 
           rows="4" 
           placeholder="Tell us a bit about yourself..."
         ></textarea>
       </div>
+
+      <AnimatePresence>
+        {error && (
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            className="p-4 bg-red-50 border border-red-200 rounded-lg text-red-700"
+          >
+            {error}
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       <button 
         disabled={loading}

@@ -1,51 +1,23 @@
 import { Routes, Route, Link } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Hero from "./components/Hero";
-import DonationGoal from "./components/Goal";
 import Programs from "./components/Programs";
 import SuccessStories from "./components/SuccessStories";
 import VolunteerForm from "./components/VolunteerForm";
+import Contact from "./pages/Contact";
+import Donate from "./pages/Donate";
+import OurWork from "./pages/OurWork";
+import ProgramsPage from "./pages/ProgramsPage";
+import MeetTheTeam from "./pages/MeetTheTeam";
+import WhatsNew from "./pages/WhatsNew";
+import InitiativeDetail from "./pages/InitiativeDetail";
 import { motion } from "framer-motion";
 import { MapPin, Mail, ArrowLeft } from "lucide-react";
-
-const IMPACT_DATA = [
-  { metric: "10k+", label: "Seeds Distributed", icon: "🌱" },
-  { metric: "50+", label: "Clinics Organized", icon: "🏥" },
-  { metric: "24/7", label: "Farmer Support", icon: "📞" },
-];
 
 const Home = () => (
   <>
     <Hero />
-    <DonationGoal />
     <Programs />
-    <section className="py-20 container mx-auto px-6">
-      <div className="text-center mb-16">
-        <motion.h2 
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          className="text-3xl md:text-4xl font-bold text-slate-800"
-        >
-          Our Measurable Impact
-        </motion.h2>
-      </div>
-      <div className="grid md:grid-cols-3 gap-8">
-        {IMPACT_DATA.map((item, index) => (
-          <motion.div 
-            key={index}
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ delay: index * 0.2 }}
-            viewport={{ once: true }}
-            className="bg-white p-10 rounded-3xl shadow-sm border border-slate-100 text-center hover:shadow-xl transition-all duration-300"
-          >
-            <div className="text-5xl mb-4">{item.icon}</div>
-            <h3 className="text-4xl font-bold text-green-700">{item.metric}</h3>
-            <p className="text-slate-500 font-medium uppercase tracking-wider text-sm mt-2">{item.label}</p>
-          </motion.div>
-        ))}
-      </div>
-    </section>
     <SuccessStories />
     <section className="py-24 bg-green-600 text-white text-center">
       <div className="container mx-auto px-6">
@@ -98,6 +70,13 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/join" element={<JoinUs />} />
+        <Route path="/contact" element={<Contact />} />
+        <Route path="/donate" element={<Donate />} />
+        <Route path="/work" element={<OurWork />} />
+        <Route path="/programs" element={<ProgramsPage />} />
+        <Route path="/programs/:id" element={<InitiativeDetail />} />
+        <Route path="/team" element={<MeetTheTeam />} />
+        <Route path="/what-new" element={<WhatsNew />} />
       </Routes>
       <footer className="bg-slate-900 text-white py-16 text-center">
         <div className="container mx-auto px-6">

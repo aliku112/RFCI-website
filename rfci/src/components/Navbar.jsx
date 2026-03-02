@@ -9,24 +9,20 @@ export default function Navbar() {
   return (
     <nav className="bg-white/90 backdrop-blur-md sticky top-0 z-50 border-b border-slate-100">
       <div className="container mx-auto px-6 py-4 flex justify-between items-center">
-        {/* Logo with "Home" label - Routes to Homepage */}
-        <Link to="/" className="flex items-center gap-3 group">
-          <div className="w-8 h-8 bg-green-600 rounded-lg flex items-center justify-center text-white font-bold group-hover:scale-110 transition-transform">
-            R
-          </div>
-          <div className="flex flex-col leading-none">
-            <span className="text-xl font-bold text-slate-800 tracking-tight">RFCI</span>
-            <span className="text-[10px] font-bold text-green-600 uppercase tracking-widest">Home</span>
-          </div>
+
+        {/* Logo */}
+        <Link to="/">
+          <img src="/newlogo.png" alt="RFCI Logo" className="w-20 h-20 object-contain" />
         </Link>
-        
         {/* Desktop Links */}
         <div className="hidden md:flex space-x-8 items-center font-medium text-slate-600">
-          <Link to="/work" className="hover:text-green-600 transition">Our Work</Link>
-          <Link to="/programs" className="hover:text-green-600 transition">Programs</Link>
+          <Link to="/work" className="hover:text-green-600 transition">About Us</Link>
+          <Link to="/programs" className="hover:text-green-600 transition">Core Initiatives</Link>
+          <Link to="/what-new" className="hover:text-green-600 transition">What's New</Link>
+          <Link to="/team" className="hover:text-green-600 transition">Meet the Team</Link>
           <Link to="/contact" className="hover:text-green-600 transition">Contact Us</Link>
           
-          <div className="flex items-center gap-3 pl-4 border-l border-slate-200">
+          <div className="flex items-center gap-3">
             {/* UPDATED: Navigates to the new /join page */}
             <Link 
               to="/join" 
@@ -62,8 +58,10 @@ export default function Navbar() {
           >
             <div className="flex flex-col p-6 space-y-4">
               <Link to="/" onClick={() => setIsOpen(false)} className="text-lg font-bold text-green-600">Home</Link>
-              <Link to="/work" onClick={() => setIsOpen(false)} className="text-lg font-medium text-slate-700">Our Work</Link>
-              <Link to="/programs" onClick={() => setIsOpen(false)} className="text-lg font-medium text-slate-700">Programs</Link>
+              <Link to="/work" onClick={() => setIsOpen(false)} className="text-lg font-medium text-slate-700">About Us</Link>
+              <Link to="/what-new" onClick={() => setIsOpen(false)} className="text-lg font-medium text-slate-700">What's New</Link>
+              <Link to="/programs" onClick={() => setIsOpen(false)} className="text-lg font-medium text-slate-700">Core Initiatives</Link>
+              <Link to="/team" onClick={() => setIsOpen(false)} className="text-lg font-medium text-slate-700">Meet the Team</Link>
               <Link to="/contact" onClick={() => setIsOpen(false)} className="text-lg font-medium text-slate-700">Contact Us</Link>
               
               <div className="grid grid-cols-2 gap-4 pt-2 border-t border-slate-50 mt-2">

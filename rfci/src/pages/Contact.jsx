@@ -1,12 +1,90 @@
-import Navbar from "../components/Navbar";
-import { motion } from "framer-motion";
-import { Mail, Phone, MapPin, Send } from "lucide-react";
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Mail, Phone, MapPin, Send, CheckCircle } from "lucide-react";
+import emailjs from "@emailjs/browser";
+import { EMAIL_CONFIG } from "../config/emailConfig";
+
+// EmailJS already initialized in config
+
 
 export default function Contact() {
-  return (
-    <div className="bg-slate-50 min-h-screen font-sans">
-      <Navbar />
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    subject: "",
+    message: ""
+  });
+  const [loading, setLoading] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+  const [error, setError] = useState("");
 
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setError("");
+
+    try {
+      await emailjs.send(
+        EMAIL_CONFIG.SERVICE_ID,
+        EMAIL_CONFIG.CONTACT_TEMPLATE_ID,
+        {
+          from_name: formData.name,
+          from_email: formData.email,
+          to_email: EMAIL_CONFIG.RECIPIENT_EMAIL,
+          subject: formData.subject,
+          message: formData.message,
+        }
+      );
+
+      setSubmitted(true);
+      setFormData({ name: "", email: "", subject: "", message: "" });
+    } catch (err) {
+      setError("Failed to send message. Please try again or contact us directly.");
+      console.error("Email error:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (submitted) {
+    return (
+      <section className="py-20 container mx-auto px-6">
+        <motion.div 
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="max-w-md mx-auto text-center"
+        >
+          <div className="w-20 h-20 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-6">
+            <CheckCircle size={40} />
+          </div>
+          <h2 className="text-3xl font-bold text-slate-800 mb-2">Message Sent!</h2>
+          <p className="text-slate-600 mb-8">
+            Thank you for reaching out. A member of the RFCI team will contact you shortly.
+          </p>
+          <button 
+            onClick={() => {
+              setSubmitted(false);
+              setFormData({ name: "", email: "", subject: "", message: "" });
+            }}
+            className="text-green-600 font-bold hover:underline"
+          >
+            Send another message
+          </button>
+        </motion.div>
+      </section>
+    );
+  }
+
+  return (
+    <>
       <section className="py-20 container mx-auto px-6">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
@@ -72,42 +150,96 @@ export default function Contact() {
               animate={{ opacity: 1, x: 0 }}
               className="bg-white p-10 rounded-[3rem] shadow-sm border border-slate-100"
             >
-              <form className="space-y-6">
+              <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="grid md:grid-cols-2 gap-6">
                   <div>
                     <label className="block text-sm font-bold text-slate-700 mb-2">Full Name</label>
-                    <input type="text" className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-green-500 outline-none transition" placeholder="John Doe" />
+                    <input 
+                      type="text" 
+                      name="name"
+                      value={formData.name}
+                      onChange={handleChange}
+                      required
+                      className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-green-500 outline-none transition" 
+                      placeholder="John Doe" 
+                    />
                   </div>
                   <div>
                     <label className="block text-sm font-bold text-slate-700 mb-2">Email Address</label>
-                    <input type="email" className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-green-500 outline-none transition" placeholder="john@example.com" />
+                    <input 
+                      type="email" 
+                      name="email"
+                      value={formData.email}
+                      onChange={handleChange}
+                      required
+                      className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-green-500 outline-none transition" 
+                      placeholder="john@example.com" 
+                    />
                   </div>
                 </div>
 
                 <div>
                   <label className="block text-sm font-bold text-slate-700 mb-2">Subject</label>
-                  <select className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-green-500 outline-none transition">
-                    <option>General Inquiry</option>
-                    <option>Partnership Proposal</option>
-                    <option>Volunteer Opportunities</option>
-                    <option>Donation Question</option>
+                  <select 
+                    name="subject"
+                    value={formData.subject}
+                    onChange={handleChange}
+                    required
+                    className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-green-500 outline-none transition"
+                  >
+                    <option value="">Select a subject</option>
+                    <option value="General Inquiry">General Inquiry</option>
+                    <option value="Partnership Proposal">Partnership Proposal</option>
+                    <option value="Volunteer Opportunities">Volunteer Opportunities</option>
+                    <option value="Donation Question">Donation Question</option>
                   </select>
                 </div>
 
                 <div>
                   <label className="block text-sm font-bold text-slate-700 mb-2">Message</label>
-                  <textarea rows="5" className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-green-500 outline-none transition" placeholder="How can we help you?"></textarea>
+                  <textarea 
+                    rows="5" 
+                    name="message"
+                    value={formData.message}
+                    onChange={handleChange}
+                    required
+                    className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-green-500 outline-none transition" 
+                    placeholder="How can we help you?"
+                  ></textarea>
                 </div>
 
-                <button className="w-full bg-green-600 text-white py-4 rounded-xl font-bold text-lg hover:bg-green-700 transition flex items-center justify-center gap-2 group">
-                  Send Message
-                  <Send className="w-5 h-5 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+                <AnimatePresence>
+                  {error && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -10 }}
+                      className="p-4 bg-red-50 border border-red-200 rounded-lg text-red-700"
+                    >
+                      {error}
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+
+                <button 
+                  type="submit"
+                  disabled={loading}
+                  className="w-full bg-green-600 text-white py-4 rounded-xl font-bold text-lg hover:bg-green-700 transition flex items-center justify-center gap-2 group disabled:opacity-70 disabled:cursor-not-allowed"
+                >
+                  {loading ? (
+                    <div className="w-5 h-5 border-3 border-white/30 border-t-white rounded-full animate-spin" />
+                  ) : (
+                    <>
+                      Send Message
+                      <Send className="w-5 h-5 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+                    </>
+                  )}
                 </button>
               </form>
             </motion.div>
           </div>
         </div>
       </section>
-    </div>
+    </>
   );
 }

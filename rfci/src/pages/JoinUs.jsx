@@ -6,9 +6,6 @@ import Navbar from "../components/Navbar";
 
 export default function JoinUs() {
   return (
-    <div className="bg-slate-50 min-h-screen font-sans">
-      <Navbar />
-      
       <main className="py-16 md:py-24">
         <div className="container mx-auto px-6">
           {/* Breadcrumb / Back Link */}
@@ -71,6 +68,5 @@ export default function JoinUs() {
           </div>
         </div>
       </main>
-    </div>
   );
 }

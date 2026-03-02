@@ -1,17 +1,44 @@
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
+import { useState, useEffect } from "react";
+
+const HERO_IMAGES = [
+  { src: "/LadyCare.jpg" },
+  { src: "/freenhis.jpg" },
+  { src: "/co.jpeg" },
+  { src: "/ff.jpeg" },
+  { src: "/ss.jpeg" },
+  { src: "/group.jpeg" }
+];
 
 export default function Hero() {
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentImageIndex((prev) => (prev + 1) % HERO_IMAGES.length);
+    }, 5000);
+    return () => clearInterval(interval);
+  }, []);
+
   return (
     <section className="relative h-150 flex items-center overflow-hidden">
-      {/* Background Image with Overlay */}
+      {/* Animated Background Image with Carousel */}
       <div className="absolute inset-0 z-0">
-        <img 
-          src="https://images.unsplash.com/photo-1592982537447-7440770cbfc9?auto=format&fit=crop&w=1600" 
-          className="w-full h-full object-cover"
-          alt="African Farmer"
-        />
-        {/* bg-linear-to-r is used for Tailwind v4; use bg-gradient-to-r for v3 */}
+        {HERO_IMAGES.map((imageObj, index) => (
+          <motion.img
+            key={index}
+            src={imageObj.src}
+            className="absolute w-full h-full object-cover"
+            alt={`Hero Background ${index + 1}`}
+            initial={{ opacity: 0 }}
+            animate={{ 
+              opacity: index === currentImageIndex ? 1 : 0
+            }}
+            transition={{ duration: 1 }}
+          />
+        ))}
+        {/* Gradient Overlay */}
         <div className="absolute inset-0 bg-linear-to-r from-green-900/90 to-transparent"></div>
       </div>
 
@@ -41,10 +68,35 @@ export default function Hero() {
               to="/programs" 
               className="bg-white/10 hover:bg-white/20 backdrop-blur-md text-white border border-white/30 px-8 py-4 rounded-xl font-bold text-lg transition-all text-center"
             >
-              Our Programs
+              Our Initiatives
             </Link>
           </div>
         </motion.div>
+      </div>
+
+      {/* Caption overlay for specific images */}
+      {HERO_IMAGES[currentImageIndex]?.caption && (
+        <div className="absolute inset-0 flex items-center justify-center z-20">
+          <h2 className="text-white text-4xl md:text-6xl font-bold bg-black/40 px-6 py-4 rounded">
+            {HERO_IMAGES[currentImageIndex].caption}
+          </h2>
+        </div>
+      )}
+
+      {/* Carousel Indicators */}
+      <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-20 flex gap-2">
+        {HERO_IMAGES.map((_, index) => (
+          <motion.button
+            key={index}
+            onClick={() => setCurrentImageIndex(index)}
+            className={`h-3 rounded-full transition-all ${
+              index === currentImageIndex 
+                ? "w-8 bg-green-400" 
+                : "w-3 bg-white/50 hover:bg-white/70"
+            }`}
+            whileHover={{ scale: 1.2 }}
+          />
+        ))}
       </div>
     </section>
   );
